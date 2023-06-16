@@ -1,0 +1,50 @@
+MLD
+
+Personne(#id:int, nom:varchar, prenom:varchar, date_naissance:date, numero:int, rue:varchar, ville:varchar, code_postal:numeric(5), telephone:numeric(10))
+Personnel(#id=>Personne(id):int, specialite: enum {félins, canidés, reptiles, rongeurs, oiseaux, autres})
+Veterinaire(#id=>Personnel(id):int)
+Assistant(#id=>Personnel(id):int)
+Client(#id=>Personne(id):int )
+Contraintes: Client.id != Personnel.id
+
+
+Espece(#nom:varchar, categorie:enum{félins, canidés, reptiles, rongeurs, oiseaux, autres})
+Animal(#id:int, nom: varchar ,date_naissance:date, puce:numeric, passeport:numeric, espece=>Espece(nom) )
+Contraintes : date_naissance, puce et passeport peuvent être nuls, puce et passeport sont uniques
+
+Appartient(#animal=>Animal(id), #proprietaire=>Client(id), date_debut:date, date_fin:date)
+Suit(#animal=>Animal(id), #personnel=>Personnel(id), date_debut:date, date_fin:date)
+Contraintes: date_fin peut être NULL, date_debut < date_fin
+
+
+Poids(#id:int, mesure:float , date_saisie : datetime, animal=>Animal(id));
+Taille(#id: int, mesure:float, date_saisie : datetime, animal=>Animal(id));
+Analyse(#id:int , lien : text, date_saisie : datetime, animal=>Animal(id));
+Procedure(#id: int, nom:varchar, description: text, date_saisie : datetime, animal=>Animal(id));
+Consultation(#id:int, date:date, observation:text, date_saisie:datetime, animal=>Animal(id), personnel=>Personnel(id))
+Contrainte : observation peut être nul
+
+Medicament(#molecule: varchar, effets: text)
+Traitement(#id: int, date_debut : date, duree: int, date_saisie: datetime, veterinaire=>Veterinaire(id), animal=>Animal(id))
+Autorise(#espece=>Espece(nom), #medicament =>Medicament(molecule))
+Prescrit(#medicament=>Medicament(molecule), #traitement=>Traitement(id), quantite: int)
+
+
+Contraintes : 
+- tous les attributs sont non-nuls (sauf ceux précisés pouvant être nuls)
+- seul un vétérinaire peut prescrire un traitement
+- un personnel ne peut pas être également client
+- la durée d'un traitement est exprimée en jours
+
+Héritages :
+- Pour Personne : nous avons besoin d'avoir les deux classes Personnel et Client séparées pour mieux gérer les liens qu'elles ont avec les autres classes, la classe Personne comprend beaucoup d'éléments, donc faire un héritage par référence permet de ne pas alourdir les deux classes filles.
+- Pour Personnel : nous avons besoin de séparer les classes Veterinaire et Assistant pour appliquer la contrainte que seul un vétérinaire peut prescrire un traitement, de plus nous choisissons un héritage par référence pour ne pas perdre les liens avec la classe Personnel, et ne pas alourdir les classes filles.
+
+Justifications :
+- Nous avons rajouté un id lorsqu’on pouvait théoriquement avoir plusieurs entrées ayant les mêmes attributs (ex : la classe Poids), ou que la clé candidate pouvait changer et n’était pas vraiment pratique à manipuler (ex : l’attribut telephone de la classe Personne)
+- On peut théoriquement faire la même mesure le même jour donc on a décidé de mettre un id pour éviter les conflits.
+- Pour les classes Poids, Taille, Procedure, Consultation et Traitement, on crée un id car plusieurs tests peuvent être réalisés retournant les mêmes valeurs donc l’id permet de les différencier.
+- Pour chaque relation N:N, on crée une table intermédiaire renseignant les clés étrangères faisant référence aux 2 tables concernées.
+
+
+

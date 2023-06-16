@@ -1,0 +1,139 @@
+CREATE TYPE CATE AS ENUM ('felins', 'canides', 'reptiles', 'rongeurs', 'oiseaux', 'autres');
+
+CREATE TABLE Personne(
+id SERIAL PRIMARY KEY,
+nom VARCHAR NOT NULL,
+prenom VARCHAR NOT NULL,
+date_naissance DATE NOT NULL,
+numero INT NOT NULL,
+rue VARCHAR NOT NULL,
+ville VARCHAR NOT NULL,
+code_postal NUMERIC(5) NOT NULL,
+telephone NUMERIC(10) NOT NULL
+);
+
+CREATE TABLE Personnel(
+id SERIAL PRIMARY KEY,
+specialite CATE NOT NULL,
+FOREIGN KEY (id) REFERENCES Personne(id)
+);
+
+CREATE TABLE Veterinaire(
+id INT PRIMARY KEY,
+FOREIGN KEY (id) REFERENCES Personnel(id)
+);
+
+CREATE TABLE Assistant(
+id INT PRIMARY KEY,
+FOREIGN KEY (id) REFERENCES Personnel(id)
+);
+
+CREATE TABLE Client(
+id INT PRIMARY KEY,
+FOREIGN KEY (id) REFERENCES Personne(id)
+);
+
+
+CREATE TABLE Espece (
+nom VARCHAR PRIMARY KEY,
+categorie CATE NOT NULL
+);
+
+CREATE TABLE Animal (
+id SERIAL PRIMARY KEY,
+nom VARCHAR NOT NULL,
+date_naissance DATE,
+puce NUMERIC UNIQUE,
+passeport NUMERIC UNIQUE,
+espece VARCHAR NOT NULL,
+FOREIGN KEY (espece) REFERENCES Espece(nom)
+);
+
+CREATE TABLE Appartient (
+animal INT,
+FOREIGN KEY (animal) REFERENCES Animal(id),
+proprietaire INT,
+FOREIGN KEY (proprietaire) REFERENCES Client(id),
+PRIMARY  KEY (animal,proprietaire),
+date_debut DATE NOT NULL,
+date_fin DATE,
+CHECK (date_debut < date_fin)
+);
+
+CREATE TABLE Suit (
+animal INT,
+FOREIGN KEY (animal) REFERENCES Animal(id),
+personnel INT,
+FOREIGN KEY (personnel) REFERENCES Personnel(id),
+PRIMARY KEY (animal, personnel),
+date_debut DATE NOT NULL,
+date_fin DATE,
+CHECK (date_debut < date_fin)
+);
+
+CREATE TABLE Poids(
+id SERIAL PRIMARY KEY,
+mesure FLOAT NOT NULL,
+date_saisie TIMESTAMP NOT NULL,
+animal INT NOT NULL REFERENCES Animal(id)
+);
+
+CREATE TABLE Taille(
+id SERIAL PRIMARY KEY,
+mesure FLOAT NOT NULL,
+date_saisie TIMESTAMP NOT NULL,
+animal INT NOT NULL REFERENCES Animal(id)
+);
+
+CREATE TABLE Analyses(
+id SERIAL PRIMARY KEY,
+lien TEXT NOT NULL,
+date_saisie TIMESTAMP NOT NULL,
+animal INT NOT NULL REFERENCES Animal(id)
+);
+
+CREATE TABLE Procedure(
+id SERIAL PRIMARY KEY,
+nom VARCHAR NOT NULL,
+description TEXT NOT NULL,
+date_saisie TIMESTAMP NOT NULL,
+animal INT NOT NULL REFERENCES Animal(id)
+);
+
+CREATE TABLE Consultation(
+id SERIAL PRIMARY KEY,
+la_date DATE NOT NULL,
+observation TEXT,
+date_saisie TIMESTAMP NOT NULL,
+animal INT NOT NULL REFERENCES Animal(id),
+personnel INT NOT NULL REFERENCES Personnel(id)
+);
+
+
+CREATE TABLE Medicament(
+molecule VARCHAR PRIMARY KEY, 
+effets TEXT NOT NULL 
+);
+
+CREATE TABLE Traitement(
+id SERIAL PRIMARY KEY, 
+date_debut DATE NOT NULL,
+duree INT NOT NULL,
+date_saisie TIMESTAMP NOT NULL, 
+veterinaire INT REFERENCES Veterinaire(id) NOT NULL,
+animal INT REFERENCES Animal(id) NOT NULL
+);
+
+CREATE TABLE Autorise(
+espece VARCHAR REFERENCES Espece(nom),
+medicament VARCHAR REFERENCES Medicament(molecule),
+PRIMARY KEY (espece, medicament)
+);
+
+CREATE TABLE Prescrit(
+medicament VARCHAR REFERENCES Medicament(molecule),
+traitement INT REFERENCES Traitement(id),
+quantite INTEGER NOT NULL,
+PRIMARY KEY (medicament, traitement)
+);
+

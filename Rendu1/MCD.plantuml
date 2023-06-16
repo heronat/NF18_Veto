@@ -1,0 +1,116 @@
+@startuml
+abstract class personne {
+    nom  : varchar
+    prenom  : varchar
+    date de naissance : date
+    téléphone : numeric {clé}
+    numero_rue : integer
+    rue : varchar
+    ville : varchar
+    code_postal : numeriic
+}
+
+class client
+
+class personnel{
+    specialite : enum[félins, canidés, reptiles, rongeurs, oiseaux, autres]
+}
+
+class veterinaire
+class assistant
+
+class animal{
+    nom : varchar
+    date de naissance : date
+    puce d'identification : numeric
+    numéro de passport : numeric 
+}
+
+class espece{
+    nom : varchar {clé}
+    categorie : enum[félins, canidés, reptiles, rongeurs, oiseaux, autres]
+}
+
+
+class poids{
+    mesure : float
+    date saisie : datetime
+}
+
+class taille{
+    mesure : float
+    date saisie : datetime
+}
+
+class consultation {
+    date : date
+    observation : text
+    date saisie : datetime
+}
+
+class traitement{
+    date debut : date
+    durée : varchar
+    date saisie : datetime
+}
+
+class analyse{
+    lien : text
+    date saisie : datetime
+}
+
+class procedure{
+    nom : varchar
+    description : text
+    date saisie : datetime
+}
+
+class medicament{
+    nom : varchar {clé}
+    effets : text
+}
+
+class prescrit{
+    nombre par jour : integer
+}
+
+class appartient{
+    date debut : date
+    date fin : date
+}
+
+class suivi {
+    date debut : date
+    date fin : date
+}
+
+personne <|-- client
+personne <|-- personnel
+personnel <|-- veterinaire
+personnel <|-- assistant
+veterinaire "1" -- "*" traitement : ordonne
+animal "*" -- "*" client
+animal "*" -- "*" personnel
+animal "*" -- "1" espece : fait partie
+"animal" "1" -- "*" poids : pèse
+"animal" "1" -- "*" taille : mesure
+"animal" "1" -- "*" consultation : a reçu des
+"animal" "1" -- "*" analyse : contient une
+"animal" "1" -- "*" procedure : suit une
+"animal" "1" -- "*" traitement: est traité
+traitement "*" -- "*" medicament 
+consultation "*" -- "1" personnel : réalisée par
+medicament "*" -- "*" espece : autorisé pour
+(traitement, medicament) . prescrit
+(animal, client) . appartient 
+(personnel, animal) .. suivi
+
+note "héritage exclusif de personne" as N1
+N1..client
+N1..personnel
+
+note "héritage exclusif de personnel" as N2
+N2..veterinaire
+N2..assistant 
+
+@enduml

@@ -1,0 +1,144 @@
+1
+SELECT m.molecule, (t.duree * p.quantite * COUNT(*)) AS nombre
+FROM Medicament m
+INNER JOIN Prescrit p ON m.molecule = p.medicament
+INNER JOIN Traitement t ON p.traitement = t.id
+WHERE t.date_debut - debut_periode > 0 AND fin_periode - t.date_debut > t.duree
+GROUP BY m.molecule, t.duree, p.quantite;
+
+pour test :
+SELECT m.molecule, (t.duree * p.quantite * COUNT(*)) AS nombre
+FROM Medicament m
+INNER JOIN Prescrit p ON m.molecule = p.medicament
+INNER JOIN Traitement t ON p.traitement = t.id
+WHERE t.date_debut - '2022-11-15' > 0 AND '2022-12-20' - t.date_debut > t.duree
+GROUP BY m.molecule, t.duree, p.quantite;
+
+
+
+2
+SELECT COUNT(*) AS nombre_traitements
+FROM Traitement
+WHERE date_debut - debut_periode > 0 AND fin_periode - date_debut > duree;
+
+pour test :
+SELECT COUNT(*) AS nombre_traitements
+FROM Traitement
+WHERE date_debut - '2022-11-15' > 0 AND '2022-11-25' - date_debut > duree;
+
+
+
+3
+SELECT Procedure.nom, date_saisie 
+FROM Procedure 
+INNER JOIN Animal ON Procedure.animal = Animal.id 
+WHERE 'Miette' = Animal.nom 
+ORDER BY date_saisie;
+
+
+
+4
+SELECT COUNT(Animal.id), espece FROM Animal 
+INNER JOIN Traitement ON Traitement.animal = Animal.id
+GROUP BY espece;
+
+
+
+5
+SELECT Animal.nom, Animal.date_naissance, Animal.espece, Animal.puce, Animal.passeport,Appartient.date_debut,Personne.prenom,Personne.nom
+FROM Animal,Appartient,Personne
+WHERE Appartient.animal = Animal.id AND Personne.nom = 'Corazza' AND Personne.prenom = 'Valentin' AND Appartient.proprietaire = Personne.id;
+
+
+
+6
+SELECT Animal.nom, Animal.date_naissance, Animal.espece, Animal.puce, Animal.passeport, Appartient.date_debut, Personne.prenom, Personne.nom
+FROM Animal, Appartient, Personne
+WHERE Appartient.animal = Animal.id AND Personne.nom = 'Corazza' AND Personne.prenom = 'Valentin' AND Appartient.proprietaire = Personne.id AND date_fin IS NULL;
+
+
+
+7
+SELECT Animal.nom, Animal.date_naissance, Animal.espece, Animal.puce, Animal.passeport, Appartient.date_debut, Personne.prenom, Personne.nom
+FROM Animal, Appartient, Personne
+WHERE Appartient.animal = Animal.id AND Personne.nom = 'Corazza' AND Personne.prenom = 'Valentin' AND Appartient.proprietaire = Personne.id AND date_fin IS NOT NULL;
+
+
+
+8
+SELECT Animal.nom, Poids.mesure, Poids.date_saisie
+FROM Animal, Poids
+WHERE Poids.animal = Animal.id
+ORDER BY date_saisie;
+SELECT Animal.nom, Taille.mesure, Taille.date_saisie
+FROM Animal, Taille
+WHERE Taille.animal = Animal.id
+ORDER BY date_saisie;
+
+
+
+9
+SELECT Animal.nom, Prescrit.medicament, Traitement.duree
+FROM Animal, Prescrit, Traitement
+WHERE Prescrit.traitement = Traitement.id AND Traitement.animal = Animal.id AND Animal.nom = 'Miette'
+ORDER BY date_debut;
+
+
+
+10 
+SELECT P.medicament, P.quantite, T.date_debut, T.duree
+FROM Traitement T
+JOIN Animal A ON T.animal = A.id
+JOIN Prescrit P ON P.traitement = T.id
+WHERE (A.nom = 'Eunuque') AND ((CURRENT_DATE - T.date_debut) <= T.duree)
+ORDER BY T.date_debut;
+
+
+
+11
+SELECT p.prenom, p.nom, p.date_naissance, p.numero, p.rue, p.ville, p.code_postal, p.telephone, 'Vétérinaire' AS poste
+FROM Personne p
+INNER JOIN Personnel pl ON p.id = pl.id
+INNER JOIN Veterinaire v ON v.id = pl.id
+WHERE pl.specialite = 'reptiles';
+SELECT p.prenom, p.nom, p.date_naissance, p.numero, p.rue, p.ville, p.code_postal, p.telephone, 'Assistant' AS poste
+FROM Personne p
+INNER JOIN Personnel pl ON p.id = pl.id
+INNER JOIN Assistant a ON a.id = pl.id
+WHERE pl.specialite = 'reptiles';
+
+
+12
+SELECT a.nom, a.espece
+FROM Animal a
+INNER JOIN Suit s ON a.id = s.animal
+INNER JOIN Personnel pl ON pl.id = s.personnel
+INNER JOIN Veterinaire v ON v.id = pl.id
+WHERE v.id = veto_recherche AND ((s.date_fin IS NULL) OR (CURRENT_DATE - s.date_fin <= 30));
+
+pour test :
+SELECT a.nom, a.espece
+FROM Animal a
+INNER JOIN Suit s ON a.id = s.animal
+INNER JOIN Personnel pl ON pl.id = s.personnel
+INNER JOIN Veterinaire v ON v.id = pl.id
+WHERE v.id = 2 AND ((s.date_fin IS NULL) OR (CURRENT_DATE - s.date_fin <= 30));
+
+
+13
+SELECT p.prenom, p.nom, s.date_debut, s.date_fin
+FROM Personne p
+INNER JOIN Personnel pl ON p.id = pl.id
+INNER JOIN Veterinaire v ON pl.id = v.id
+INNER JOIN Suit s ON v.id = s.personnel
+WHERE s.animal = animal_recherche
+ORDER BY s.date_debut DESC;
+
+pour test :
+SELECT p.prenom, p.nom, s.date_debut, s.date_fin
+FROM Personne p
+INNER JOIN Personnel pl ON p.id = pl.id
+INNER JOIN Veterinaire v ON pl.id = v.id
+INNER JOIN Suit s ON v.id = s.personnel
+WHERE s.animal = 2
+ORDER BY s.date_debut DESC;

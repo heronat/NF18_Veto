@@ -1,0 +1,57 @@
+INSERT INTO Personne VALUES (DEFAULT, 'Corazza', 'Valentin', '2002-09-29', 5, 'Rue de Paris', 'Compiègne', 60200, 0769767761);
+INSERT INTO Personne VALUES (DEFAULT, 'Lacroix', 'Robin', '2002-11-28', 4, 'Rue des Cordeliers', 'Compiègne', 60200, 0603322719);
+INSERT INTO Personne VALUES (DEFAULT, 'Piteux', 'Nathan', '2003-01-03', 2, 'Avenue du Général De Gaulle', 'Paris', 75000, 0789985183);
+INSERT INTO Personne VALUES (DEFAULT, 'Leprêtre', 'Thomas', '2002-06-11', 25, 'Rue des peupliers', 'Amiens', 80000, 0675912541);
+INSERT INTO Personne VALUES (DEFAULT, 'Moreau', 'Julien', '1980-05-22', 11, 'Boulevard Foch', 'Compiègne', 60200, 0625418544);
+
+INSERT INTO Personnel VALUES (2, 'felins');
+INSERT INTO Personnel VALUES (5, 'canides');
+INSERT INTO Personnel VALUES (3, 'canides');
+
+INSERT INTO Veterinaire VALUES (2);
+INSERT INTO Veterinaire VALUES (5);
+
+INSERT INTO Assistant VALUES (3);
+
+INSERT INTO Client VALUES (1);
+INSERT INTO Client VALUES (4);
+
+INSERT INTO Espece VALUES ('chat', 'felins');
+INSERT INTO Espece VALUES ('chien', 'canides');
+
+INSERT INTO Animal(id, nom, espece) VALUES (DEFAULT, 'Eunuque', 'chat');
+INSERT INTO Animal(id, nom, espece) VALUES (DEFAULT, 'Miette', 'chien');
+
+INSERT INTO Appartient VALUES (1, 4, '2005-06-06', '2016-06-05');
+INSERT INTO Appartient VALUES (2, 1, '2009-12-15');
+
+INSERT INTO Suit VALUES (2, 2, '2022-01-05');
+
+
+INSERT INTO Poids VALUES (DEFAULT,50.3,now(),1);
+INSERT INTO Poids VALUES (DEFAULT,92.1,now(),2);
+
+INSERT INTO Analyses VALUES (DEFAULT,'https://vetcaetera.files.wordpress.com/2014/04/foreign_bodies.jpg',now(),1);
+INSERT INTO Analyses VALUES (DEFAULT,'https://i.f1g.fr/media/figaro/704x396_crop/2018/10/23/XVMe9aaaf34-d6ad-11e8-b42a-252d37f2e545-805x403.jpg',now(),2);
+
+INSERT INTO Taille VALUES (DEFAULT,89.4,now(),1);
+INSERT INTO Taille VALUES (DEFAULT, 190.25,now(),2);
+
+INSERT INTO Procedure VALUES (DEFAULT,'Garrot du cou','Tu presses le cou avec le garrot mais il ne faut faire ca uniquement dans des cas extremes',now(),1);
+INSERT INTO Procedure VALUES (DEFAULT,'Ovarectomie','On retire les ovules',now(),2);
+
+INSERT INTO Consultation VALUES (DEFAULT,current_timestamp,'Il est tout triste',now(),1,3);
+INSERT INTO Consultation VALUES (DEFAULT,current_timestamp,'Il va mieux que la derniere fois',now(),2,2);
+
+INSERT INTO Medicament VALUES ('Paracetamol','Soigne tout');
+INSERT INTO Medicament VALUES ('Ibuprofene','Soigne plein de choses');
+INSERT INTO Medicament VALUES ('Dulcolax','Contre la constipation');
+
+INSERT INTO Traitement VALUES (DEFAULT,current_timestamp, 15,now(),5,1);
+INSERT INTO Traitement VALUES (DEFAULT,current_timestamp, 4,now(),2,1);
+
+INSERT INTO Prescrit VALUES ('Ibuprofene',1,4);
+INSERT INTO Prescrit VALUES ('Paracetamol',2,14);
+
+INSERT INTO Autorise VALUES ('chien','Ibuprofene');
+INSERT INTO Autorise VALUES ('chat','Dulcolax');
